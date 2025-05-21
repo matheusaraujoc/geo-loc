@@ -11,17 +11,22 @@
 </head>
 
 <body>
-    <nav class="navbar bg-dark navbar-dark shadow-sm">
+    <nav class="navbar bg-dark navbar-dark shadow-sm py-3">
         <div class="container">
-            <span class="navbar-brand">Painel Administrativo</span>
-            <button class="btn btn-danger btn-sm" onclick="limparLocalizacoes()">
-                Limpar Todas as Localizações
-            </button>
+            <span class="navbar-brand">📍 Painel Administrativo</span>
+            <div>
+                <button class="btn btn-danger btn-sm" onclick="limparLocalizacoes()">
+                    🗑️ Limpar Todas
+                </button>
+                <button class="btn btn-outline-light btn-sm ms-2" onclick="window.location.href='index.html'">
+                    🔙 Voltar
+                </button>
+            </div>
         </div>
     </nav>
 
     <div class="container mt-4">
-        <div id="mapAdmin" class="map shadow"></div>
+        <div id="mapAdmin" class="map shadow-lg"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -34,39 +39,56 @@
         }
 
         // Configuração do Mapa
-        const mapAdmin = L.map('mapAdmin').setView([-2.9047, -41.7557], 15);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapAdmin);
+        const parnaibaCoords = [-2.9047, -41.7557];
+        const mapAdmin = L.map('mapAdmin', {
+            tap: false,
+            zoomControl: false
+        }).setView(parnaibaCoords, 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(mapAdmin);
+
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(mapAdmin);
+
+        // Carregar localizações
         let markers = [];
+        function atualizarMapa() {
+            markers.forEach(marker => mapAdmin.removeLayer(marker));
+            markers = [];
 
-        // Carregar localizações salvas
-        carregarLocalizacoes().forEach(loc => {
-            const marker = L.marker([loc.lat, loc.lng])
-                .addTo(mapAdmin)
-                .bindPopup(`Chamado #${loc.id}`);
-            markers.push(marker);
-        });
+            carregarLocalizacoes().forEach(loc => {
+                const marker = L.marker([loc.lat, loc.lng], {
+                    icon: L.icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41]
+                    })
+                })
+                    .addTo(mapAdmin)
+                    .bindPopup(`<b>Chamado #${loc.id}</b><br>${new Date(loc.data).toLocaleString()}`);
 
-        // Adicionar novo marcador
+                markers.push(marker);
+            });
+        }
+
+        // Evento de clique
         mapAdmin.on('click', function (e) {
-            const newLocation = {
+            const novoChamado = {
                 id: Date.now(),
                 lat: e.latlng.lat,
                 lng: e.latlng.lng,
                 data: new Date().toISOString()
             };
 
-            salvarLocalizacao(newLocation);
-
-            L.marker([newLocation.lat, newLocation.lng])
-                .addTo(mapAdmin)
-                .bindPopup(`Chamado #${newLocation.id}`);
+            salvarLocalizacao(novoChamado);
+            atualizarMapa();
         });
 
-        function limparLocalizacoes() {
-            localStorage.removeItem('locations');
-            markers.forEach(marker => mapAdmin.removeLayer(marker));
-            markers = [];
-        }
+        // Inicialização
+        atualizarMapa();
     </script>
 </body>
 

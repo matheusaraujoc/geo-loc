@@ -11,20 +11,29 @@
             height: 100vh;
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
+
+        .access-card {
+            max-width: 400px;
+            transition: transform 0.3s;
+        }
+
+        .access-card:hover {
+            transform: translateY(-5px);
+        }
     </style>
 </head>
 
 <body class="d-flex align-items-center">
     <div class="container text-center">
-        <div class="card mx-auto shadow" style="max-width: 400px;">
+        <div class="card mx-auto shadow access-card">
             <div class="card-body p-5">
-                <h3 class="mb-4">Sistema de Localização</h3>
+                <h3 class="mb-4">🛠️ Sistema de Localização</h3>
                 <div class="d-grid gap-3">
-                    <button class="btn btn-primary btn-lg" onclick="acessarComoAdmin()">
-                        Acessar como Admin
+                    <button class="btn btn-primary btn-lg py-3" onclick="acessarComoAdmin()">
+                        📍 Acessar como Admin
                     </button>
-                    <button class="btn btn-secondary btn-lg" onclick="acessarComoTecnico()">
-                        Acessar como Técnico
+                    <button class="btn btn-secondary btn-lg py-3" onclick="acessarComoTecnico()">
+                        👷 Acessar como Técnico
                     </button>
                 </div>
             </div>
