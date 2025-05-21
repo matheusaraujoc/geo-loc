@@ -1,0 +1,28 @@
+.map {
+    height: calc(100vh - 100px);
+    width: 100%;
+    border-radius: 10px;
+}
+
+.navbar {
+    padding: 1rem;
+}
+
+body {
+    background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+    .map {
+        height: calc(100vh - 80px);
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
